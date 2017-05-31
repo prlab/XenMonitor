@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>XenMonitor</title>
+		<script src="lib/jquery-1.9.1.js"></script>
+		<script src="lib/jquery.xmlrpc-0.2.0.js"></script>
+		<script src="lib/jquery.xenapi-0.1.3.js"></script>
+		<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+
+		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css">
+	
+		<link rel="stylesheet"  href="styles/main.css">
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="content">
+				<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+					<div class="navbar-header">
+					    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				        	<span class="icon-bar"></span>
+					    	<span class="icon-bar"></span>
+					    	<span class="icon-bar"></span>
+					    </button>    
+					</div>
+					<a class="navbar-brand" href="#index.html">
+						<div class="cloud pool_symb ">Overview</div>
+					</a>
+					<div class="navbar-collapse collapse">
+						<ul class="nav navbar-nav navbar-left">
+					        <a class="navbar-brand" href="index.html">
+			 					<img alt="Brand" src="images/logo.png">
+			 				</a>
+					    </ul>
+					     <ul class="nav navbar-nav navbar-right">
+						    <li>
+						      	<button id="refr" class="refresh-button btn btn-default btn-sm" type="submit"><i class="glyphicon glyphicon-refresh"></i></button>
+							</li>
+						</ul>
+					</div>
+				</nav>
+				<div class="space"></div>
+				<div class="well well-sm">
+			    		<p class="vm-name text-center font-size:25px"size="4" face="verdana">This is some text!</p>
+			    </div>
+			
+				
+				<ul class="nav tabs nav-tabs">
+			   		<li class="active tab">
+			    		<a href="#tab1" data-toggle="tab">
+				    		<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+				    	</a>
+				   	</li>
+				    <li>
+				    	<a href="#tab2" data-toggle="tab">
+				    		<span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+					   	</a>
+				    </li>
+				    <li>
+				    	<a href="#tab3" data-toggle="tab">
+				    		<span class="glyphicon glyphicon-flash" aria-hidden="true"></span>	
+				     	</a>
+					</li>
+				</ul>
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="tab1">
+						<div class="panel panel-default">
+							<div class="panel-body">
+							    <div id="name"><b>Name:&nbsp;&nbsp;&nbsp;</b></div>
+							    <div id="description"><b>Description:&nbsp;&nbsp;&nbsp;</b></div>
+							   	<div id="address"><b>Address:&nbsp;&nbsp;&nbsp;</b></div>
+							   	<div id="tags"><b>Tags:&nbsp;&nbsp;&nbsp;</b></div>
+							   	<div class="cpus_number"><b>CPUs:&nbsp;&nbsp;&nbsp;</b></div>
+							   	<div id="ram"><b>RAM:&nbsp;&nbsp;&nbsp;</b></div>
+							   	<div id="uuid"><b>UUID:&nbsp;&nbsp;&nbsp;</b></div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab2" >
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div>
+									<div class="text-center"><b>RAM</b></div>
+								    <div id="ram-bar" class="progress"></div>
+								</div>
+								<div class="row">
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" >
+										<div>
+											<div class="text-center"><b>CPUs Number</b></div>
+											<div class="cpus_number text-center"></div>
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" >
+										<div>
+											<div class="text-center"><b>CPU model</b></div>
+											<div id="cpus_model" class="text-center"></div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div class="text-center"><b>Software Version</b></div>
+								    <div id="os" class="text-center"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab3">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class=" container">
+									<div id="actions" class="row text-center">
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  			<div class="modal-dialog" role="document">
+		    			<div class="modal-content">
+		     	 			<div id="type" class="modal-header">
+		        				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        				<div id="ModalTitle"></div>
+		      				</div>
+		      				<div class="modal-body">
+		     					<p id="ModalBody"></p>
+							</div>
+		      			</div>
+		  			</div>
+				</div>
+			</div>
+			<div id="footer_push"></div>
+			<div id="footer">
+				<h7>Copyright &#169 Spyridon Georgakopoulos Kolaitis 2016 </h7>
+			</div>
+		</div>
+
+	<script>
+		$(document).ready(function(){
+
+
+		
+			var query = window.location.hash.substring(1);
+			var dat=JSON.parse(sessionStorage.data);
+			var data=find_host(query);
+			console.log(data);
+			data.host.mem=calc_mem(data.metrics_host);
+			resultHandler(data);
+
+			function modal_window(body,head,type){
+				$("#type").attr('class',"header-"+type);
+				$("#ModalTitle").html('<h4 >'+head+'</h4>')
+				$("#ModalBody").html(body);
+				$('#Modal').modal('show');
+			}
+
+			function resultHandler(result){
+				var string=status(result.host);
+				$(".cloud").html(string);
+				$(".vm-name").html(result.host.hostname);
+				$('#btnReview').click(function(){
+	  				$('.nav-tabs > .active').next('li').find('a').trigger('click');
+				});
+				$("#name").append('<small>'+result.host.hostname+'</small>'); 
+				$("#description").append('<small>'+result.host.name_description+'</small>');
+				$("#address").append('<small>'+result.host.address+'</small>');
+				$("#tags").append('<small>'+result.host.tags+'</small>');
+				$(".cpus_number").append('<small>'+result.host.cpu_info.cpu_count+'</small>');
+				$("#ram").append('<small>'+result.host.mem.total+' MB</small>');
+				$("#uuid").append('<small>'+result.host.uuid+'</small>');
+				$("#ram-bar").append('<div  class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:'+(result.host.mem.used/result.host.mem.total)*100+'%;"><span>'+result.host.mem.used+'MB / '+result.host.mem.total+'MB</span></div>'); 
+				$("#cpus_model").append('<small>'+result.host.cpu_info.modelname+'</small>');
+				$("#os").append('<small>'+result.host.software_version.product_brand+' '+result.host.software_version.product_version+' build '+result.host.software_version.build_number+'</small>');
+				$("#refr").click(refresh_all);
+				$(".action-buttons").click(action);
+				$(".action-help").click(actionHelp);
+			}
+
+			function refresh_all(){
+				modal_window("This may take a while...","Refreshing the entire database.","info");
+				var temp_data=new Array();
+				var demo=new Array();
+				var check=0;
+				$.each(dat, function (key,value) {
+					demo.push(new Object());
+					demo[key] = new XenAPI(value.cred.username,value.cred.password,value.cred.hostUrl);
+					demo[key].init(function(err,res) {
+						if(err) {
+							console.log(key);
+							modal_window(err,"Refreshing the database has Failed.","error");
+						} 
+						else {
+							check++;
+							temp_data.push(new Object());
+							temp_data[key].cred=value.cred;
+							demo[key].VM.get_all_records(function(err,res) {
+								if(err) {
+									modal_window(err,"Getting VM records Failed.","error");
+								}else {
+									console.log(res);
+									temp_data[key].vms=res;
+								}
+							});
+							demo[key].VM_metrics.get_all_records(function(err,res){
+								if(err) {
+									modal_window(err,"Getting VM metrics Failed.","error");
+								}else {
+									temp_data[key].metrics_vm=res;
+								}
+							});
+							demo[key].VM_guest_metrics.get_all_records(function(err,res) {
+								if(err) {
+									modal_window(err,"Getting VM guest metrics Failed.","error");
+								}else {
+									temp_data[key].metrics_vm_guest=res;
+								}
+							});
+							demo[key].host.get_all_records(function(err,res) {
+								if(err) {
+									modal_window(err,"Getting Host records Failed.","error");
+								}else {
+									$.each(res, function (key2,value) {
+										temp_data[key].host=value;
+										temp_data[key].host.key=key2
+									});
+								}
+							});
+							demo[key].host_metrics.get_all_records(function(err,res) {
+								if(err) {
+									modal_window(err,"Getting Host metrics Failed.","error");
+								}else {
+									temp_data[key].metrics_host=res;
+								}
+							});
+						}
+						if(check==dat.length){
+							console.log("mmpika");
+							console.log(temp_data);
+							setTimeout(function () {sessionStorage.data=JSON.stringify(temp_data);}, 10000);
+							setTimeout(function () {location.reload();}, 10000);
+						}
+					});
+				});
+				
+			}
+
+
+			function action(event){
+				var str=$(this).html();
+				var act = str.substr(str.indexOf("<br>") + 4);
+				modal_window('This may take a while...<br>Manually refresh if something seems wrong!','The '+act+' action is beginning.',"info");
+				demo = new XenAPI(data.cred.username,data.cred.password,data.cred.hostUrl);
+				demo.init(function(err,res) {
+					if(err) {
+						modal_window(err,"The Host wasn't able to "+act,"error");
+					} 
+					else{
+						switch(act) {
+							case 'Disable':
+								demo.host.disable([data.host.key],function(err,res){
+									if(err) {
+										modal_window(err,"The Host wasn't able to "+act,"error");
+									}
+									else{
+										console.log(res);
+									}
+								});
+							break
+							case 'Enable':
+								demo.host.enable([data.host.key],function(err,res){
+									if(err) {
+										modal_window(err,"The Host wasn't able to "+act,"error");
+									}
+									else{
+										console.log(res);
+									}
+								});
+							break
+							case 'Reboot':
+								demo.host.reboot([data.host.key],function(err,res){
+									if(err) {
+										modal_window(err,"The Host wasn't able to "+act,"error");
+									}		
+								});
+							break
+							case 'Shut Down':
+								demo.host.shutdown([data.host.key],function(err,res){
+									if(err) {
+										modal_window(err,"The Host wasn't able to "+act,"error");
+									}		
+								});
+							break
+
+							
+						}
+					}
+					setTimeout(function () {refresh_all();}, 5000);
+				});
+					
+			}
+			function find(query){
+					var obj=host.vms;
+					var result={}
+					$.each(obj, function (key,value) {
+						if(key==query){
+							result=value;
+							result.key=key;
+						}
+					});
+				
+				return result;
+			}
+			function replace_power_state(query,num){
+				var obj=host.vms;
+				var result={};
+				$.each(obj, function (key,value) {
+					if(key==query){
+						value.power_state=num;
+					}
+				});
+				return obj;
+
+			}
+
+			function find_host(query){
+
+				var res;
+				for(i=0; i<=dat.length-1; i++){
+					var obj=dat[i].host;
+					if(obj.uuid==query){
+						res=dat[i];
+						$.each(res.metrics_host, function (key,value) {
+							res.metrics_host=value;
+						});
+					}
+				}
+				return res;
+			}
+
+			function get_tools_installed(vm,guest_metr){
+				var tools='Not Installed';
+				$.each(guest_metr, function (key,value) {
+					if(vm.guest_metrics==key){
+						if(value.PV_drivers_up_to_date==1){
+							tools='Installed'
+						}
+					}
+				});
+				return tools;
+
+
+			}
+
+
+			function actionHelp(){
+				modal_window('<h4 >i) Shut Down manually all the running VMs.<br>ii) Disable the Host.<br>iii) Then Shut Down or Reboot the host.</h4>',"If you want to Shut Down or Reboot the Host:","info")
+			}
+
+
+			function calc_mem(value){
+				var mem={};
+				mem.total=Math.floor((value.memory_total)/(1048576));
+				mem.free=Math.floor((value.memory_free)/(1048576));
+				mem.used=mem.total-mem.free;
+				return mem;
+				
+			}
+			function status(result){
+				var string;
+				if(result.enabled){
+				       var string='<span class="glyphicon glyphicon-home green" aria-hidden="true"></span>';
+				       $("#actions").append('<button type="button" class="action-dis action-buttons  btn btn-default btn-md text-center"><span class="glyphicon glyphicon-pause yellow"></span><br>Disable</button><button type="button" class="action-help btn btn-default btn-sm text-center"><span class="glyphicon glyphicon-question-sign blue"></span></button>');
+				}
+				if(!result.enabled){
+			        var string='<span class="glyphicon glyphicon-home yellow" aria-hidden="true"></span>';
+			        $("#actions").append('<button type="button" class="action-dis action-buttons btn btn-default btn-md text-center"><span class="glyphicon glyphicon-play green"></span><br>Enable</button><button type="button" class="action-help btn btn-default btn-sm text-center"><span class="glyphicon glyphicon-question-sign blue"></span></button>');
+			        $("#actions").append('<div><button type="button" class="actions_rem action-buttons btn btn-default btn-md text-center"><span class="glyphicon glyphicon-refresh green"></span><br>Reboot</button><button type="button" class="actions_rem action-buttons btn btn-default btn-md text-center"><span class="glyphicon glyphicon-off red"></span><br>Shut Down</button></div>');
+				}
+				return string;
+			}
+
+	});
+	</script>
+
+	</body>
+</html>

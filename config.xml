@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "com.XenMonitor"
+        versionCode = "1" 
+        version     = "1.0.0" >
+
+    <!-- versionCode is optional and Android only -->
+
+    <name>XenMonitor</name>
+
+    <description>
+        Mobile App for Monitoring one or more complete XenServer infastractures.
+    </description>
+
+     <author email="georgako@outlook.com" >
+            Spyridon Georgakopoulos Kolaitis
+      </author>
+
+    <content src="index.html"/>
+  <preference name="permissions" value="none"/>
+  <preference name="orientation" value="default"/>
+  <preference name="target-device" value="universal"/>
+  <preference name="fullscreen" value="true"/>
+  <preference name="webviewbounce" value="true"/>
+  <preference name="prerendered-icon" value="true"/>
+  <preference name="stay-in-webview" value="false"/>
+  <preference name="ios-statusbarstyle" value="black-opaque"/>
+  <preference name="detect-data-types" value="true"/>
+  <preference name="exit-on-suspend" value="false"/>
+  <preference name="show-splash-screen-spinner" value="true"/>
+  <preference name="auto-hide-splash-screen" value="true"/>
+  <preference name="disable-cursor" value="false"/>
+  <preference name="android-minSdkVersion" value="14"/>
+  <preference name="android-installLocation" value="auto"/>
+  <preference name="SplashScreen" value="screen" />
+  <preference name="SplashScreenDelay" value="3000" />
+  <gap:plugin name="org.apache.cordova.battery-status"/>
+  <gap:plugin name="org.apache.cordova.camera"/>
+  <gap:plugin name="org.apache.cordova.media-capture"/>
+  <gap:plugin name="org.apache.cordova.console"/>
+  <gap:plugin name="org.apache.cordova.contacts"/>
+  <gap:plugin name="org.apache.cordova.device"/>
+  <gap:plugin name="org.apache.cordova.device-motion"/>
+  <gap:plugin name="org.apache.cordova.device-orientation"/>
+  <gap:plugin name="org.apache.cordova.dialogs"/>
+  <gap:plugin name="org.apache.cordova.file"/>
+  <gap:plugin name="org.apache.cordova.file-transfer"/>
+  <gap:plugin name="org.apache.cordova.geolocation"/>
+  <gap:plugin name="org.apache.cordova.globalization"/>
+  <gap:plugin name="org.apache.cordova.inappbrowser"/>
+  <gap:plugin name="org.apache.cordova.media"/>
+  <gap:plugin name="org.apache.cordova.network-information"/>
+  <gap:plugin name="org.apache.cordova.vibration"/>
+  <gap:plugin name="cordova-plugin-whitelist" source="npm" />
+
+     <!-- Define app icon for each platform. -->
+    <icon src="artwork/platform/android/res/drawable-ldpi/appicon.png"   gap:platform="android"    gap:qualifier="ldpi" />
+    <icon src="artwork/platform/android/res/drawable-mdpi/appicon.png"   gap:platform="android"    gap:qualifier="mdpi" />
+    <icon src="artwork/platform/android/res/drawable-hdpi/appicon.png"   gap:platform="android"    gap:qualifier="hdpi" />
+    <icon src="artwork/platform/android/res/drawable-xhdpi/appicon.png"  gap:platform="android"    gap:qualifier="xhdpi" />
+    <icon src="artwork/platform/android/res/drawable-xxhdpi/appicon.png"  gap:platform="android"    gap:qualifier="xxhdpi" />
+
+    <!-- Define app splash screen for each platform.
+    <gap:splash src="artwork/platform/android/res/drawable-ldpi/background.9.png"       gap:platform="android" gap:qualifier="port-ldpi" />
+    <gap:splash src="artwork/platform/android/res/drawable-mdpi/background.9.png"       gap:platform="android" gap:qualifier="port-mdpi" />
+    <gap:splash src="artwork/platform/android/res/drawable-hdpi/background.9.png"       gap:platform="android" gap:qualifier="port-hdpi" />
+    <gap:splash src="artwork/platform/android/res/drawable-xhdpi/background.9.png"      gap:platform="android" gap:qualifier="port-xhdpi" />
+    <gap:splash src="artwork/platform/android/res/drawable-xxhdpi/background.9.png"      gap:platform="android" gap:qualifier="port-xxhdpi" />
+     -->
+
+     <platform name="android">
+    <!-- you can use any density that exists in the Android project -->
+        <splash src="res/drawable-hdpi/background.png" density="land-hdpi"/>
+        <splash src="artwork/platform/android/res/drawable-ldpi/background.9.png" density="land-ldpi"/>
+        <splash src="artwork/platform/android/res/drawable-mdpi/background.9.png" density="land-mdpi"/>
+        <splash src="artwork/platform/android/res/drawable-xhdpi/background.9.png" density="land-xhdpi"/>
+        <splash src="artwork/platform/android/res/drawable-xxhdpi/background.9.png" density="land-xxhdpi"/>
+
+        <splash src="res/drawable-hdpi/background.png" density="port-hdpi"/>
+        <splash src="artwork/platform/android/res/drawable-ldpi/background.9.png" density="port-ldpi"/>
+        <splash src="artwork/platform/android/res/drawable-mdpi/background.9.png" density="port-mdpi"/>
+        <splash src="artwork/platform/android/res/drawable-xhdpi/background.9.png" density="port-xhdpi"/>
+        <splash src="artwork/platform/android/res/drawable-xxhdpi/background.9.png" density="port-xxhdpi"/>
+    </platform>
+    <allow-navigation href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    
+    <platform name="android" />
+
+
+</widget>
